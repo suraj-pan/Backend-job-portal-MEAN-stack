@@ -6,7 +6,6 @@ const Application = require('../models/Application');
 const Job = require('../models/Job');
 const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail'); // optional
-
 // Apply to job
 router.post('/:jobId/apply', auth, upload.single('resume'), async (req, res) => {
     try {
@@ -37,6 +36,18 @@ router.post('/:jobId/apply', auth, upload.single('resume'), async (req, res) => 
         res.json({ msg: 'Application submitted', application });
     } catch (err) {
         console.error(err);
+        res.status(500).send('Server error');
+    }
+});
+
+// ✅ Get logged-in user's applications
+router.get('/my', auth, async (req, res) => {
+    try {
+        const applications = await Application.find({ applicant: req.user.id })
+            .populate('job', 'title location salary'); // include job details
+        res.json(applications);
+    } catch (err) {
+        console.error(err.message);
         res.status(500).send('Server error');
     }
 });
