@@ -17,8 +17,12 @@ connectDB();
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
-
+// app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
+app.use(cors({
+    origin: ["https://naukri-job-portal.netlify.app"],  // ✅ your Netlify domain
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // if you use cookies or JWT auth
+}));
 // Static uploads (for dev)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
